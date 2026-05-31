@@ -2,3 +2,6 @@
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
+
+# SPA 路由：所有路径都返回 index.html
+/*  /index.html  200
