@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && rm -f dist/_redirects",
-    "preview": "vite preview"
+    "preview": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.6",
@@ -21,11 +22,13 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.39.0",
     "@types/node": "^22.14.0",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.1",
     "@vitejs/plugin-react": "^5.0.0",
     "typescript": "~5.8.2",
-    "vite": "^6.3.6"
+    "vite": "^6.3.6",
+    "wrangler": "^4.95.0"
   }
 }
