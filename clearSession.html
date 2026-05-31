@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>清除会话数据</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 600px;
+            text-align: center;
+        }
+        h1 {
+            color: #06b6d4;
+            margin-bottom: 1rem;
+        }
+        p {
+            color: #cbd5e1;
+            margin: 1rem 0;
+        }
+        button {
+            background: #0891b2;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 0.5rem;
+        }
+        button:hover {
+            background: #06b6d4;
+        }
+        .success {
+            color: #4ade80;
+            margin-top: 1rem;
+            display: none;
+        }
+        .log {
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 4px;
+            padding: 1rem;
+            margin-top: 1rem;
+            text-align: left;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 会话数据清理工具</h1>
+        <p>这个工具将清除浏览器中保存的登录会话和本地数据，使您能够重新登录。</p>
+        
+        <button onclick="clearAll()">清除所有数据</button>
+        <button onclick="clearSupabaseOnly()">仅清除 Supabase 会话</button>
+        <button onclick="goToStudent()">返回学生登录</button>
+        <button onclick="goToTeacher()">返回教师登录</button>
+        
+        <div class="success" id="success">✓ 数据已清除！页面将在 2 秒后刷新...</div>
+        
+        <div class="log" id="log"></div>
+    </div>
+
+    <script>
+        const logEl = document.getElementById('log');
+        const successEl = document.getElementById('success');
+
+        function log(msg) {
+            console.log(msg);
+            logEl.innerHTML += msg + '\n';
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function clearAll() {
+            log('=== 清除所有数据 ===');
+            
+            // 清除 LocalStorage
+            log('清除 LocalStorage...');
+            const keys = Object.keys(localStorage);
+            keys.forEach(key => {
+                if (key.includes('interactive-tutor') || key.includes('supabase') || key.includes('auth')) {
+                    log(`  ✓ 删除: ${key}`);
+                    localStorage.removeItem(key);
+                }
+            });
+            
+            // 清除 SessionStorage
+            log('清除 SessionStorage...');
+            const skeys = Object.keys(sessionStorage);
+            skeys.forEach(key => {
+                if (key.includes('interactive-tutor') || key.includes('supabase') || key.includes('auth')) {
+                    log(`  ✓ 删除: ${key}`);
+                    sessionStorage.removeItem(key);
+                }
+            });
+            
+            // 清除所有 Cookie
+            log('清除 Cookies...');
+            document.cookie.split(";").forEach(c => {
+                const name = c.split("=")[0].trim();
+                if (name) {
+                    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+                    log(`  ✓ 删除: ${name}`);
+                }
+            });
+            
+            log('✓ 清除完成！');
+            successEl.style.display = 'block';
+            
+            setTimeout(() => {
+                window.location.href = '/student';
+            }, 2000);
+        }
+
+        function clearSupabaseOnly() {
+            log('=== 清除 Supabase 会话 ===');
+            
+            const supabaseKeys = ['sb-soxpkytjeqygryertwoe-auth-token', 'supabase.auth.token'];
+            supabaseKeys.forEach(key => {
+                if (localStorage.getItem(key)) {
+                    log(`  ✓ 删除: ${key}`);
+                    localStorage.removeItem(key);
+                }
+            });
+            
+            log('✓ 完成！');
+            successEl.style.display = 'block';
+            
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        }
+
+        function goToStudent() {
+            clearAll();
+        }
+
+        function goToTeacher() {
+            log('重定向到教师登录...');
+            window.location.href = '/teacher';
+        }
+
+        // 初始化时显示当前存储的数据
+        log('=== 当前存储的数据 ===');
+        log('LocalStorage 中与 auth 相关的项:');
+        Object.keys(localStorage).forEach(key => {
+            if (key.includes('interactive-tutor') || key.includes('supabase') || key.includes('auth')) {
+                log(`  ${key}`);
+            }
+        });
+        log('\nSessionStorage 中与 auth 相关的项:');
+        Object.keys(sessionStorage).forEach(key => {
+            if (key.includes('interactive-tutor') || key.includes('supabase') || key.includes('auth')) {
+                log(`  ${key}`);
+            }
+        });
+    </script>
+</body>
+</html>

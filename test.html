@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>测试页面</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 min-h-screen flex items-center justify-center">
+  <div class="text-center">
+    <h1 class="text-3xl font-bold text-cyan-400 mb-4">测试页面</h1>
+    <p class="text-slate-300">如果能看到这个页面，说明基本的 HTML 和 CSS 加载正常</p>
+    <button onclick="testReact()" class="mt-4 px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-lg">测试 React</button>
+  </div>
+  <script type="module">
+    import React from 'https://cdn.skypack.dev/react';
+    import ReactDOM from 'https://cdn.skypack.dev/react-dom';
+    
+    window.testReact = () => {
+      ReactDOM.render(
+        React.createElement('div', { className: 'text-green-400 text-xl mt-4' }, 'React 工作正常！'),
+        document.body
+      );
+    };
+  </script>
+</body>
+</html>
